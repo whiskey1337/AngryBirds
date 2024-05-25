@@ -61,14 +61,23 @@ public class SlingshotHandler : MonoBehaviour
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && birdOnSlingshot)
         {
-            clickedWithinArea = false;
+            if (GameManager.instance.HasEnoughShots())
+            {
+                clickedWithinArea = false;
 
-            spawnedRedBird.LaunchBird(direction, shotForce);
-            birdOnSlingshot = false;
+                spawnedRedBird.LaunchBird(direction, shotForce);
 
-            SetLines(centerPosition.position);
+                GameManager.instance.UseShot();
 
-            StartCoroutine(SpawnBirdAfterTime());
+                birdOnSlingshot = false;
+
+                SetLines(centerPosition.position);
+
+                if (GameManager.instance.HasEnoughShots())
+                {
+                    StartCoroutine(SpawnBirdAfterTime());
+                }
+            }
         }
     }
 
