@@ -1278,8 +1278,9 @@ MonoBehaviour:
   centerPosition: {fileID: 1618788720}
   idlePosition: {fileID: 102148904}
   maxDistance: 3.5
+  shotForce: 9
   slingshotArea: {fileID: 215193968}
-  redBirdPrefab: {fileID: 670203180751822213, guid: f7633975413188844a40d0f06046910f, type: 3}
+  redBirdPrefab: {fileID: 6099135835454203177, guid: f7633975413188844a40d0f06046910f, type: 3}
   birdPositionOffset: 0.275
 --- !u!1 &1612147822
 GameObject:

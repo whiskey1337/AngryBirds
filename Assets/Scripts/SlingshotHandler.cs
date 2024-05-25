@@ -18,12 +18,13 @@ public class SlingshotHandler : MonoBehaviour
 
     [Header("Slingshot Stats")]
     [SerializeField] private float maxDistance = 3.5f;
+    [SerializeField] private float shotForce = 5f;
 
     [Header("Scripts")]
     [SerializeField] private SlingshotArea slingshotArea;
 
     [Header("Bird")]
-    [SerializeField] private GameObject redBirdPrefab;
+    [SerializeField] private Bird redBirdPrefab;
     [SerializeField] private float birdPositionOffset = 2f;
 
     private Vector2 slingshotLinesPosition;
@@ -33,7 +34,7 @@ public class SlingshotHandler : MonoBehaviour
 
     private bool clickedWithinArea;
 
-    private GameObject spawnedRedBird;
+    private Bird spawnedRedBird;
 
     private void Awake()
     {
@@ -59,6 +60,8 @@ public class SlingshotHandler : MonoBehaviour
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             clickedWithinArea = false;
+
+            spawnedRedBird.LaunchBird(direction, shotForce);
         }
     }
 
