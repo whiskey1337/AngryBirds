@@ -19,6 +19,7 @@ public class SlingshotHandler : MonoBehaviour
     [Header("Slingshot Stats")]
     [SerializeField] private float maxDistance = 3.5f;
     [SerializeField] private float shotForce = 5f;
+    [SerializeField] private float timeBetweenBirdRespawns = 2f;
 
     [Header("Scripts")]
     [SerializeField] private SlingshotArea slingshotArea;
@@ -33,6 +34,7 @@ public class SlingshotHandler : MonoBehaviour
     private Vector2 directionNormalized;
 
     private bool clickedWithinArea;
+    private bool birdOnSlingshot;
 
     private Bird spawnedRedBird;
 
@@ -51,17 +53,22 @@ public class SlingshotHandler : MonoBehaviour
             clickedWithinArea = true;
         }
 
-        if (Mouse.current.leftButton.isPressed && clickedWithinArea)
+        if (Mouse.current.leftButton.isPressed && clickedWithinArea && birdOnSlingshot)
         {
             DrawSlingshot();
             PositionAndRotationOfBird();
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        if (Mouse.current.leftButton.wasReleasedThisFrame && birdOnSlingshot)
         {
             clickedWithinArea = false;
 
             spawnedRedBird.LaunchBird(direction, shotForce);
+            birdOnSlingshot = false;
+
+            SetLines(centerPosition.position);
+
+            StartCoroutine(SpawnBirdAfterTime());
         }
     }
 
@@ -107,12 +114,21 @@ public class SlingshotHandler : MonoBehaviour
 
         spawnedRedBird = Instantiate(redBirdPrefab, spawnPosition, Quaternion.identity);
         spawnedRedBird.transform.right = dir;
+
+        birdOnSlingshot = true;
     }
 
     private void PositionAndRotationOfBird()
     {
         spawnedRedBird.transform.position = slingshotLinesPosition + directionNormalized * birdPositionOffset;
         spawnedRedBird.transform.right = directionNormalized;
+    }
+
+    private IEnumerator SpawnBirdAfterTime()
+    {
+        yield return new WaitForSeconds(timeBetweenBirdRespawns);
+
+        SpawnBird();
     }
 
     #endregion
