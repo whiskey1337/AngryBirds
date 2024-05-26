@@ -27,6 +27,7 @@ public class SlingshotHandler : MonoBehaviour
 
     [Header("Scripts")]
     [SerializeField] private SlingshotArea slingshotArea;
+    [SerializeField] private CameraManager cameraManager;
 
     [Header("Bird")]
     [SerializeField] private Bird redBirdPrefab;
@@ -67,6 +68,7 @@ public class SlingshotHandler : MonoBehaviour
             if (birdOnSlingshot)
             {
                 SoundManager.instance.PlayClip(elasticPulledClip, audioSource);
+                cameraManager.SwitchToFollowCamera(spawnedRedBird.transform);
             }
         }
 
@@ -133,6 +135,7 @@ public class SlingshotHandler : MonoBehaviour
 
     private void SpawnBird()
     {
+        elasticTransform.DOComplete();
         SetLines(idlePosition.position);
 
         Vector2 dir = (centerPosition.position - idlePosition.position).normalized;
@@ -155,6 +158,8 @@ public class SlingshotHandler : MonoBehaviour
         yield return new WaitForSeconds(timeBetweenBirdRespawns);
 
         SpawnBird();
+
+        cameraManager.SwitchToIdleCamera();
     }
 
     #endregion
