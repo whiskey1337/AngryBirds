@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float secondsToWaitBeforeDeathCheck = 3f;
     [SerializeField] private GameObject restartScreenObject;
     [SerializeField] private SlingshotHandler slingshotHandler;
+    [SerializeField] private Image nextLevelImage;
+
 
     private int usedNumberOfShots;
 
@@ -34,6 +37,8 @@ public class GameManager : MonoBehaviour
         {
             piggies.Add(array_piggies[i]);
         }
+
+        nextLevelImage.enabled = false;
     }
 
     public void UseShot()
@@ -98,12 +103,24 @@ public class GameManager : MonoBehaviour
     {
         restartScreenObject.SetActive(true);
         slingshotHandler.enabled = false;
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int maxLevels = SceneManager.sceneCountInBuildSettings;
+        if (currentSceneIndex + 1 < maxLevels)
+        {
+            nextLevelImage.enabled = true;
+        }
     }
 
     public void RestartGame()
     {
         DOTween.Clear(true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     #endregion
