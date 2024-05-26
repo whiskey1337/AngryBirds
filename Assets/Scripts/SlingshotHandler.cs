@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using DG.Tweening;
 
 public class SlingshotHandler : MonoBehaviour
 {
@@ -15,11 +16,14 @@ public class SlingshotHandler : MonoBehaviour
     [SerializeField] private Transform rightLineRendererStartPosition;
     [SerializeField] private Transform centerPosition;
     [SerializeField] private Transform idlePosition;
+    [SerializeField] private Transform elasticTransform;
 
     [Header("Slingshot Stats")]
     [SerializeField] private float maxDistance = 3.5f;
     [SerializeField] private float shotForce = 5f;
     [SerializeField] private float timeBetweenBirdRespawns = 2f;
+    [SerializeField] private float elasticDivider = 1.2f;
+    [SerializeField] private AnimationCurve elasticCurve;
 
     [Header("Scripts")]
     [SerializeField] private SlingshotArea slingshotArea;
@@ -59,19 +63,16 @@ public class SlingshotHandler : MonoBehaviour
             PositionAndRotationOfBird();
         }
 
-        if (InputManager.WasLeftMouseButtonReleased && birdOnSlingshot)
+        if (InputManager.WasLeftMouseButtonReleased && birdOnSlingshot && clickedWithinArea)
         {
             if (GameManager.instance.HasEnoughShots())
             {
                 clickedWithinArea = false;
-
-                spawnedRedBird.LaunchBird(direction, shotForce);
-
-                GameManager.instance.UseShot();
-
                 birdOnSlingshot = false;
 
-                SetLines(centerPosition.position);
+                spawnedRedBird.LaunchBird(direction, shotForce);
+                GameManager.instance.UseShot();
+                AnimateSlingshot();
 
                 if (GameManager.instance.HasEnoughShots())
                 {
@@ -138,6 +139,35 @@ public class SlingshotHandler : MonoBehaviour
         yield return new WaitForSeconds(timeBetweenBirdRespawns);
 
         SpawnBird();
+    }
+
+    #endregion
+
+    #region Animate Slingshot
+
+    private void AnimateSlingshot()
+    {
+        elasticTransform.position = leftLineRenderer.GetPosition(0);
+
+        float dist = Vector2.Distance(elasticTransform.position, centerPosition.position);
+
+        float time = dist / elasticDivider;
+
+        elasticTransform.DOMove(centerPosition.position, time).SetEase(elasticCurve);
+        StartCoroutine(AnimateSlingshotLines(elasticTransform, time));
+    }
+
+    private IEnumerator AnimateSlingshotLines(Transform trans, float time)
+    {
+        float elapsedTime = 0f;
+        while(elapsedTime < time)
+        {
+            elapsedTime += Time.deltaTime;
+
+            SetLines(trans.position);
+
+            yield return null;
+        }
     }
 
     #endregion
