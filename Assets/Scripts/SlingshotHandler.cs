@@ -32,6 +32,10 @@ public class SlingshotHandler : MonoBehaviour
     [SerializeField] private Bird redBirdPrefab;
     [SerializeField] private float birdPositionOffset = 2f;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip elasticPulledClip;
+    [SerializeField] private AudioClip[] elasticReleasedClips;
+
     private Vector2 slingshotLinesPosition;
 
     private Vector2 direction;
@@ -42,8 +46,12 @@ public class SlingshotHandler : MonoBehaviour
 
     private Bird spawnedRedBird;
 
+    private AudioSource audioSource;
+
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         leftLineRenderer.enabled = false;
         rightLineRenderer.enabled = false;
 
@@ -55,6 +63,11 @@ public class SlingshotHandler : MonoBehaviour
         if (InputManager.WasLeftMouseButtonPressed && slingshotArea.IsWithinSlingshotArea())
         {
             clickedWithinArea = true;
+
+            if (birdOnSlingshot)
+            {
+                SoundManager.instance.PlayClip(elasticPulledClip, audioSource);
+            }
         }
 
         if (InputManager.IsLeftMouseButtonPressed && clickedWithinArea && birdOnSlingshot)
@@ -71,6 +84,9 @@ public class SlingshotHandler : MonoBehaviour
                 birdOnSlingshot = false;
 
                 spawnedRedBird.LaunchBird(direction, shotForce);
+
+                SoundManager.instance.PlayRandomClip(elasticReleasedClips, audioSource);
+
                 GameManager.instance.UseShot();
                 AnimateSlingshot();
 

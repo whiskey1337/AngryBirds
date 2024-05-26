@@ -164,3 +164,4 @@ MonoBehaviour:
   maxHealth: 3
   damageThreshold: 0.2
   piggieDeathParticle: {fileID: 5493356637474774741, guid: d001e0c17e6a5944eb252c68164f7efe, type: 3}
+  deathClip: {fileID: 8300000, guid: 375c012509ddb2341a815e9c8d32d31e, type: 3}
