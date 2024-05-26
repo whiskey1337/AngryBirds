@@ -6,6 +6,7 @@ public class Piggie : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 3f;
     [SerializeField] private float damageThreshold = 0.2f;
+    [SerializeField] private GameObject piggieDeathParticle;
 
     private float currentHealth;
 
@@ -27,6 +28,8 @@ public class Piggie : MonoBehaviour
     private void Die()
     {
         GameManager.instance.RemovePiggie(this);
+
+        Instantiate(piggieDeathParticle, transform.position, Quaternion.identity);
 
         Destroy(gameObject);
     }

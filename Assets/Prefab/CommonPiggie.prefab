@@ -163,3 +163,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 3
   damageThreshold: 0.2
+  piggieDeathParticle: {fileID: 5493356637474774741, guid: d001e0c17e6a5944eb252c68164f7efe, type: 3}
